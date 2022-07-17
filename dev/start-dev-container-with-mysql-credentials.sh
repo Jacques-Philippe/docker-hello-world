@@ -9,7 +9,8 @@ NETWORK_NAME="todo-app"
 MYSQL_CONTAINER_NETWORK_ALIAS="mysql"
 TABLE_NAME="todos"
 
-docker run -dp $PORT:3000 \
+docker run -d \
+    -p $PORT:3000 \
     -w "/$WORKING_DIRECTORY" \
     -v "$PROJECT_ROOT/$WORKING_DIRECTORY:/$WORKING_DIRECTORY" \
     --network $NETWORK_NAME \
