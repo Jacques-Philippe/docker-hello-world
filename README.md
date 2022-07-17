@@ -13,11 +13,14 @@ Get the basics of Docker by completing their Getting Started tutorial
     ```
     docker run [options] [image name]
     ```
+    - Containers run a single process
+    - If two containers are on the same network, they can talk to each other. If they aren't, they can't.
 - Volumes allow us to persist and share data between containers
     - Create a volume   
         ```
         docker volume create [volume name]
-        ```
+        ```   
+    If you invoke a volume name in a `docker run` command without having defined the voluem first, Docker will know to create the volume for you automatically
     - Start a new container with the volume
         ```
         docker run -v [volume name:/path/in/container] [image name]
@@ -25,6 +28,11 @@ Get the basics of Docker by completing their Getting Started tutorial
     - Inspect the volume
         ```
         docker volume inspect [volume name]
+        ```
+- Networks allow us to share information
+    - Create the network
+        ```
+        docker network create [network name]
         ```
 
 ## Test your image on a new instance with Play with Docker
@@ -41,9 +49,26 @@ Get the basics of Docker by completing their Getting Started tutorial
 ### How to shell into a running container
 `docker exec -it [container name] /bin/sh`
 
+### Watch container logs
+`docker logs -f [container name]`
+
 ## A little bit on SQLite
 - By default the SQLite database in our project will store its data at /etc/todos/todo.db in our container
 
+## A little bit on MySQL
+- By default it stores data in /var/lib/mysql
+- It's necessary for the client-side application to have some credentials for MySQL in order for them to be able to access the database's resources. These credentials are provided into our client-side app in the `app/src/persistence/mysql.js` file.
+- To confirm you have the database up and running
+    1. Connect to the db and verify it connects
+        ```
+        docker exec -it [my-sql container id] mysql -u root -p
+        ```
+    1. When the password prompt comes up, type in `secret`
+    1. List the databases, and verify you see `todos`
+        ```
+        mysql> SHOW DATABASES;
+        ```
+- 
 
 # Resources
 ## VS Code Docker extension
