@@ -163,8 +163,29 @@ The purpose of the `mysql volume` is to persist database state between different
         ```
         ![output](.docs/2-dig-mysql.png)
     
+## `docker-compose`
+`docker-compose` allows us to work with several different docker containers at once.
 
+## Image layering
+- Use the `docker image history` command to see the layers in an image. You can use this command to see the command making up the image layer, as well as the size of each image layer.
 
+## Layer caching
+- Once an image layer changes, all downstream layers have to be recreated as well. We want to take advantage of this to reduce our image build time. We can do this by separating the building of the node dependencies from our app's source code. Specifically, we're going to want our app's dependencies to be built before we copy our source code. We get new `./app/Dockerfile` as follows
+```
+# syntax=docker/dockerfile:1
+FROM node:12-alpine
+RUN apk add --no-cache python2 g++ make
+WORKDIR /app
+# Copy dependencies
+COPY package.json yarn.lock ./
+RUN yarn install --production
+# Copy the actual application code
+COPY . . 
+CMD ["node", "src/index.js"]
+EXPOSE 3000
+```
+This will greatly reduce image build time in future builds.
+ 
 # Resources
 ## VS Code Docker extension
 ## Docker docs
