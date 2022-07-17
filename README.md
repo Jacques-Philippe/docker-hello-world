@@ -68,9 +68,36 @@ Get the basics of Docker by completing their Getting Started tutorial
         ```
         mysql> SHOW DATABASES;
         ```
-- 
+## A little bit on `nicolaka/netshoot`
+- `nicolaka/netshoot` is a Docker image we can use to debug networking issues. We're going to be creating containers from this image targeted to our created docker networks.
+    - Run the container
+        ```
+        docker run -it \
+            --network [network name] \
+            nicolaka/netshoot
+        ```
+    - Assuming you started a MySQL container as follows
+        ```
+        docker run -d \
+            --network todo-app \
+            --network-alias mysql \ # This is this container's alias on the network
+            --platform "linux/amd64" \ #Mac Silicon only
+            -v todo-mysql-data:/var/lib/mysql \
+            -e MYSQL_ROOT_PASSWORD=secret \
+            -e MYSQL_DATABASE=todos \
+            mysql:5.7
+        ```
+    - Look up the IP address for host name `mysql` (this is the aforementioned MySQL container's network alias)
+        ```
+        dig mysql
+        ```
+        ![output](.docs/2-dig-mysql.png)
+    
+
 
 # Resources
 ## VS Code Docker extension
 ## Docker docs
 Find the guide to this Getting started [here](https://docs.docker.com/get-started)
+## `nicolaka/netshoot`
+This is a container which ships with a lot of tools that are useful for troubleshooting or debugging networking issues. In this Getting Started guide, we're going to use it to find the IP address of our MySQL container when it's connected to the `todo-app` network
