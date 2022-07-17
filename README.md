@@ -1,5 +1,39 @@
 # Purpose
 Get the basics of Docker by completing their Getting Started tutorial
+## The Structure
+This application is made up of a development environment and database instance, where the aim is to achieve a controlled development environment separate from the database instance and still have changes made to both these environments persist beyond the container, and have these environments communicate.   
+The application is made up of the following components:
+- the `Todo app container`
+- the `app volume`
+- the `my-app network`
+- the `MySQL container`
+- the `mysql volume`
+![Application diagram](.docs/3-docker-hello-world-diagram.png)
+### `Todo app container`
+The `Todo app container` is the container which runs an image of the development environment. The development environment has three main functions:
+1. Enable the developer to work in a contained environment   
+    This is done by nature of the docker container's image
+1. Persist changed files in the work directory   
+    This is done through use of docker volume `app volume`
+1. Connect to the MySQL database container during development   
+    This is done through use of networks, specifically by running the container on the `my-app network`
+
+See `dev/start-dev-container-with-mysql-credentials.sh` to see the exact docker container run command, complete with all configuration information
+### `app volume`
+The `app volume` docker volume is the volume consumed by the `Todo app container`. It allows us to persist our changes to the `./app` code base beyond our container.
+### `my-app network`
+The docker network `my-app network` is what allows for communication between the `Todo app container` container and the `MySQL container`. It is through this network that we are able to connect to the `MySQL container` in order to have an impact on the MySQL database contained therein.
+### `MySQL container`
+The `MySQL container` is the container which runs an image of MySQL; this ships with a MySQL database ready for configuration and use. This container has two main functions:
+1. Accept connection from and handle incoming requests from the `Todo app container`.    
+    In order to make connection on the `my-app network` easier from the `Todo app container`, this container is run specifying a network alias that `Todo app container` can use to connect to. This connection is made in `dev/start-dev-container-with-mysql-credentials.sh`, if you want to have a look
+1. Persist database state between different `MySQL container` instances. This is done through the use of volumes.
+
+See `dev/start-mysql-container.sh` for the exact command used to run the `MySQL container` with the proper configuration.
+
+### `mysql volume`
+The purpose of the `mysql volume` is to persist database state between different instances of the `MySQL container`.
+
 
 # Notes
 ## On the workings of Docker
