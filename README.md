@@ -68,6 +68,15 @@ Get the basics of Docker by completing their Getting Started tutorial
         ```
         mysql> SHOW DATABASES;
         ```
+    1. provide your frontend container with the db credentials
+        `see dev/start-dev-container-with-mysql-credentials.sh`
+    1. Try adding something to the db via `localhost:3000`
+    1. Shell into the db and do the following
+        1. `mysql -u root -p`
+        1. password is `secret`
+        1. `mysql> SHOW DATABASES;`
+        1. `mysql> SELECT * FROM todos.todo_items`
+            You should see your added todos here
 ## A little bit on `nicolaka/netshoot`
 - `nicolaka/netshoot` is a Docker image we can use to debug networking issues. We're going to be creating containers from this image targeted to our created docker networks.
     - Run the container
