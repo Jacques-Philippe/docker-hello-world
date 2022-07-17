@@ -34,6 +34,33 @@ Get the basics of Docker by completing their Getting Started tutorial
         ```
         docker network create [network name]
         ```
+    - You can start containers and add them to the network, giving them an alias to make them easier to connect to from other containers on the same network
+        ```
+        ex.
+        # mysql container
+
+        docker network create $NETWORK_NAME
+        docker run -d \
+            --network $NETWORK_NAME \
+            --network-alias $MYSQL_CONTAINER_NETWORK_ALIAS \ # This is this container's alias on the network
+            --platform "linux/amd64" \ #Mac Silicon only
+            -v $VOLUME_NAME:/var/lib/mysql \
+            -e MYSQL_ROOT_PASSWORD=secret \
+            -e MYSQL_DATABASE=$TABLE_NAME \
+            mysql:5.7
+
+        # front end container
+        docker run -dp $PORT:3000 \
+            -w "/$WORKING_DIRECTORY" \
+            -v "$PROJECT_ROOT/$WORKING_DIRECTORY:/$WORKING_DIRECTORY" \
+            --network $NETWORK_NAME \
+            -e MYSQL_HOST=$MYSQL_CONTAINER_NETWORK_ALIAS \ #Note here we specify the MySQL container's network alias
+            -e MYSQL_USER=root \
+            -e MYSQL_PASSWORD=secret \
+            -e MYSQL_DB=$TABLE_NAME \
+            node:12-alpine \
+            sh -c "yarn install && yarn run dev"
+        ```
 
 ## Test your image on a new instance with Play with Docker
 1. Open your browser to [Play with Docker](https://docs.docker.com/get-started/04_sharing_app/#:~:text=your%20browser%20to-,Play%20with%20Docker,-.)
